@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 import fs from "node:fs/promises";
 import path from "node:path";
 
-const origin = "http://127.0.0.1:8000";
+const origin = "http://127.0.0.1:8002";
 
 test("private studio reopens edits and exports the selected media", async ({
   page,

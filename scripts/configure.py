@@ -12,7 +12,7 @@ from argon2 import PasswordHasher
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--origin", default="http://localhost:8000", help="Public browser origin without a trailing slash")
+    parser.add_argument("--origin", default="http://localhost:8001", help="Public browser origin without a trailing slash")
     args = parser.parse_args()
     origin = args.origin.rstrip("/")
     if not origin.startswith(("http://localhost:", "http://127.0.0.1:", "https://")) or any(c in origin for c in "\n\r'\""):
@@ -28,7 +28,7 @@ def main() -> None:
     database_password = secrets.token_urlsafe(36)
     password_hash = PasswordHasher().hash(password)
     secure = origin.startswith("https://")
-    origins = origin if secure else ",".join(dict.fromkeys([origin, "http://localhost:8000", "http://127.0.0.1:8000", "http://localhost:5173", "http://127.0.0.1:5173"]))
+    origins = origin if secure else ",".join(dict.fromkeys([origin, "http://localhost:8001", "http://127.0.0.1:8001", "http://localhost:5174", "http://127.0.0.1:5174"]))
     content = (
         f"POSTGRES_PASSWORD='{database_password}'\n"
         f"STUDIO_OWNER_PASSWORD_HASH='{password_hash}'\n"
@@ -36,7 +36,7 @@ def main() -> None:
         f"STUDIO_ALLOWED_ORIGINS={origins}\n"
         f"STUDIO_SECURE_COOKIES={str(secure).lower()}\n"
         "STUDIO_MEDIA_ROOT=./var/media\nSTUDIO_FRONTEND_DIST=./frontend/dist\n"
-        f"DATABASE_URL=postgresql+psycopg://studio:{database_password}@localhost:5432/studio\n"
+        f"DATABASE_URL=postgresql+psycopg://studio:{database_password}@localhost:5433/studio\n"
         "OPENAI_API_KEY=''\nRUNWAY_API_KEY=''\nELEVENLABS_API_KEY=''\n"
     )
     descriptor = os.open(destination, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)

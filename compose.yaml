@@ -1,7 +1,7 @@
-name: spark-studio
+name: spark-sample-gpt
 x-studio: &studio
   build: .
-  image: spark-studio:local
+  image: spark-sample-gpt:local
   env_file: .env
   environment:
     DATABASE_URL: postgresql+psycopg://studio:${POSTGRES_PASSWORD:?Run scripts/configure.py first}@db:5432/studio
@@ -36,7 +36,7 @@ services:
   api:
     <<: *studio
     ports:
-      - "127.0.0.1:8000:8000"
+      - "127.0.0.1:8001:8000"
     command: [uvicorn, studio.api:app, --host, 0.0.0.0, --port, "8000", --no-proxy-headers]
     depends_on:
       migrate:

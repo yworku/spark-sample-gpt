@@ -46,7 +46,7 @@ def get_settings() -> Settings:
         raise RuntimeError("Production requires PostgreSQL. SQLite is permitted only in tests.")
     media_root = Path(os.getenv("STUDIO_MEDIA_ROOT", "/data/media")).resolve()
     origins = tuple(item.strip().rstrip("/") for item in os.getenv(
-        "STUDIO_ALLOWED_ORIGINS", "http://localhost:8000,http://localhost:5173"
+        "STUDIO_ALLOWED_ORIGINS", "http://localhost:8001,http://localhost:5174"
     ).split(",") if item.strip())
     if not origins or any(not value.startswith(("https://", "http://")) or "*" in value for value in origins):
         raise RuntimeError("STUDIO_ALLOWED_ORIGINS must contain explicit HTTP origins.")

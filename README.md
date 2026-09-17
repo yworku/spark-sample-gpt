@@ -1,4 +1,8 @@
-# Spark Studio
+# Spark Studio — independent sample
+
+This repository is the separate `yworku/spark-sample-gpt` evaluation copy of the clean Spark Studio source. The source import commit preserves the original archive exactly; a follow-up commit isolates local runtime names and ports. It does not modify the `yworku/spark-studio` repository.
+
+The sample uses its own Docker image, containers, database/media volumes, and browser session cookie. Its default app URL is **http://localhost:8001**; direct frontend development uses port **5174**, the optional development database uses **5433**, and browser tests use **8002**.
 
 A fresh, private creative studio built from the observed Toonbee project, guided creation, and video editing workflows. All application code is new. Branding and generated style illustrations belong to this implementation; no reference-account projects or media are bundled.
 
@@ -9,12 +13,14 @@ The frontend uses **React, TypeScript, and Vite**. The backend uses **FastAPI, S
 Install [Docker with Compose](https://docs.docker.com/compose/install/) and [uv](https://docs.astral.sh/uv/getting-started/installation/). From this directory:
 
 ```bash
+git clone https://github.com/yworku/spark-sample-gpt.git
+cd spark-sample-gpt
 uv sync --locked
 uv run python scripts/configure.py
 docker compose up --build -d
 ```
 
-Open **http://localhost:8000** and use the studio password you chose. The configuration command generates a fresh database password and an Argon2 password hash without printing either secret. It refuses to overwrite an existing `.env`.
+Open **http://localhost:8001** and use the studio password you chose. The configuration command generates a fresh database password and an Argon2 password hash without printing either secret. It refuses to overwrite an existing `.env`.
 
 PostgreSQL and private media persist in separate Docker volumes. The `migrate` service initializes only an empty database or verifies the existing v1 schema. It refuses an unversioned, nonempty database or an unsupported version. The API and worker start after initialization succeeds.
 
@@ -71,7 +77,7 @@ uv sync --locked
 uv run python scripts/configure.py
 docker compose -f compose.yaml -f compose.dev.yaml up -d db
 uv run --env-file .env python -m studio.db init
-uv run --env-file .env uvicorn studio.api:app --host 127.0.0.1 --port 8000
+uv run --env-file .env uvicorn studio.api:app --host 127.0.0.1 --port 8001
 ```
 
 In two additional terminals:
@@ -86,7 +92,7 @@ npm ci
 npm run dev
 ```
 
-Open http://localhost:5173. Vite forwards `/api` to the Python server. To serve the production frontend through FastAPI, run `npm run build` in `frontend`; the generated `.env` already points `STUDIO_FRONTEND_DIST` to that output.
+Open http://localhost:5174. Vite forwards `/api` to the Python server. To serve the production frontend through FastAPI, run `npm run build` in `frontend`; the generated `.env` already points `STUDIO_FRONTEND_DIST` to that output.
 
 ## Verify
 
@@ -107,7 +113,7 @@ Browser tests, when installed, run with `npm run test:e2e`. They use a disposabl
 
 ## Serve privately over HTTPS
 
-The Compose port binds to the host's loopback address. Put your HTTPS reverse proxy in front of port 8000, set `STUDIO_ALLOWED_ORIGINS` to the exact public origin, and set `STUDIO_SECURE_COOKIES=true`. Use a request-size limit at the proxy as well as the API's streamed-body limit. The application currently provides a single owner workspace, not multiuser billing or collaboration.
+The Compose port binds to the host's loopback address. Put your HTTPS reverse proxy in front of port 8001, set `STUDIO_ALLOWED_ORIGINS` to the exact public origin, and set `STUDIO_SECURE_COOKIES=true`. Use a request-size limit at the proxy as well as the API's streamed-body limit. The application currently provides a single owner workspace, not multiuser billing or collaboration.
 
 Assets and exports are outside the frontend directory and require an authenticated owner session. Back up both the PostgreSQL database and the media volume together. Keep `.env`, generated media, and database backups out of source control.
 

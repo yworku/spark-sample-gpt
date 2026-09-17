@@ -9,7 +9,7 @@ export default defineConfig({
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? "github" : "list",
   use: {
-    baseURL: "http://127.0.0.1:8000",
+    baseURL: "http://127.0.0.1:8002",
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
   },
@@ -24,7 +24,7 @@ export default defineConfig({
   ],
   webServer: {
     command: "uv run --project .. python ../scripts/e2e_server.py",
-    url: "http://127.0.0.1:8000/api/health",
+    url: "http://127.0.0.1:8002/api/health",
     reuseExistingServer: false,
     timeout: 60_000,
   },

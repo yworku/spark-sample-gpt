@@ -17,7 +17,7 @@ from .config import get_settings
 from .db import get_session
 from .models import SessionRow, utcnow
 
-COOKIE = "spark_session"
+COOKIE = "spark_sample_session"
 _attempts: dict[str, deque] = defaultdict(deque)
 _attempts_lock = threading.Lock()
 

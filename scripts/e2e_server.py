@@ -19,7 +19,7 @@ def main() -> None:
             "DATABASE_URL": os.getenv("TEST_POSTGRES_URL", f"sqlite:///{temporary}/test.sqlite"),
             "STUDIO_MEDIA_ROOT": str(Path(temporary) / "media"),
             "STUDIO_FRONTEND_DIST": str(root / "frontend" / "dist"),
-            "STUDIO_ALLOWED_ORIGINS": "http://127.0.0.1:8000",
+            "STUDIO_ALLOWED_ORIGINS": "http://127.0.0.1:8002",
             "STUDIO_SECURE_COOKIES": "false",
             "STUDIO_OWNER_PASSWORD_HASH": PasswordHasher().hash("disposable-browser-test-password"),
             "OPENAI_API_KEY": "", "RUNWAY_API_KEY": "", "ELEVENLABS_API_KEY": "",
@@ -28,7 +28,7 @@ def main() -> None:
         init_schema()
         worker = subprocess.Popen([sys.executable, "-m", "studio.worker"], cwd=root)
         try:
-            uvicorn.run("studio.api:app", host="127.0.0.1", port=8000, proxy_headers=False)
+            uvicorn.run("studio.api:app", host="127.0.0.1", port=8002, proxy_headers=False)
         finally:
             worker.terminate()
             try:

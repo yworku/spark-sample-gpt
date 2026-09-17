@@ -40,6 +40,6 @@ The production frontend has been type-checked and built. Live paid generation ha
 
 The browser available for reference inspection cannot open this workspace's local server. Accordingly, the new UI has **not** received a deployed screenshot comparison or executed browser acceptance test in this environment. An exact pixel-for-pixel clone is not a verified claim.
 
-The recreated `yworku/spark-studio` repository returned GitHub 404 through the current connection. Source is prepared locally; pushing it and running connected CI require access to that new repository.
+Historical archive note: the original `yworku/spark-studio` connection returned GitHub 404 during implementation. This source has now been imported into the separate `yworku/spark-sample-gpt` repository for independent evaluation; the original repository is not part of this import.
 
 The next review should run the included browser checks on the deployed build, compare the dashboard/creator/editor against the reference, exercise one request with each configured provider, and then use the confirmed behavior to write the broader architecture plan.
