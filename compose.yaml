@@ -1,0 +1,58 @@
+name: spark-studio
+x-studio: &studio
+  build: .
+  image: spark-studio:local
+  env_file: .env
+  environment:
+    DATABASE_URL: postgresql+psycopg://studio:${POSTGRES_PASSWORD:?Run scripts/configure.py first}@db:5432/studio
+    STUDIO_MEDIA_ROOT: /data/media
+    STUDIO_FRONTEND_DIST: /app/frontend/dist
+  volumes:
+    - media:/data/media
+  init: true
+  restart: unless-stopped
+services:
+  db:
+    image: postgres:17-bookworm
+    environment:
+      POSTGRES_DB: studio
+      POSTGRES_USER: studio
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Run scripts/configure.py first}
+    volumes:
+      - database:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U studio -d studio"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+  migrate:
+    <<: *studio
+    command: [python, -m, studio.db, init]
+    restart: "no"
+    depends_on:
+      db:
+        condition: service_healthy
+  api:
+    <<: *studio
+    ports:
+      - "127.0.0.1:8000:8000"
+    command: [uvicorn, studio.api:app, --host, 0.0.0.0, --port, "8000", --no-proxy-headers]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health',timeout=3)"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+  worker:
+    <<: *studio
+    command: [python, -m, studio.worker]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    stop_grace_period: 35s
+volumes:
+  database:
+  media:
